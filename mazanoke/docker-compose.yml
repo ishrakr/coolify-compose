@@ -1,0 +1,5 @@
+services:
+  mazanoke:
+    image: 'ghcr.io/civilblur/mazanoke:latest'
+    environment:
+      - SERVICE_FQDN_MAZANOKE

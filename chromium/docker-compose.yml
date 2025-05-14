@@ -1,0 +1,16 @@
+services:
+  chromium:
+    image: 'lscr.io/linuxserver/chromium:latest'
+    security_opt:
+      - 'seccomp:unconfined'
+    environment:
+      - SERVICE_FQDN_CHROMIUM_3000
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+      - TZ=Etc/UTC
+      - 'CHROME_CLI=https://www.google.com'
+      - NO_DECOR=1
+      - PASSWORD=${PASSWORD}
+    volumes:
+      - 'chromium:/config'
+    shm_size: 1gb
