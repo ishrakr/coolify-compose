@@ -1,0 +1,39 @@
+services:
+
+  db:
+    image: 'mariadb:10.5'
+    restart: unless-stopped
+    command: '--default-authentication-plugin=mysql_native_password'
+    volumes:
+      - './data/database:/var/lib/mysql'
+    environment:
+      MYSQL_DATABASE: '${MYSQL_DATABASE:-panel}'
+      MYSQL_USER: '${MYSQL_USER:-pterodactyl}'
+      MYSQL_PASSWORD: '${MYSQL_PASSWORD:-pterodactyl}'
+      MYSQL_ROOT_PASSWORD: '${MYSQL_ROOT_PASSWORD:-panel_root}'
+
+  redis:
+    image: 'redis:alpine'
+    restart: unless-stopped
+
+  panel:
+    image: 'ghcr.io/pterodactyl/panel:latest'
+    restart: unless-stopped
+    volumes:
+      - 'pterodactyl_var:/app/var/'
+      - 'pterodactyl_nginx:/etc/nginx/http.d/'
+      - 'pterodactyl_certs:/etc/letsencrypt/'
+    environment:
+      SERVICE_FQDN_PTERODACTYL: null
+      APP_ENV: '${PANEL_APP_ENV:-production}'
+      APP_ENVIRONMENT_ONLY: '${PANEL_APP_ENVIRONMENT_ONLY:-false}'
+      APP_URL: '${SERVICE_FQDN_PTERODACTYL}'
+      APP_TIMEZONE: '${APP_TIMEZONE:-Etc/UTC}'
+      APP_SERVICE_AUTHOR: '${APP_AUTHOR}'
+      CACHE_DRIVER: '${PANEL_CACHE_DRIVER:-redis}'
+      SESSION_DRIVER: '${PANEL_CACHE_DRIVER:-redis}'
+      QUEUE_DRIVER: '${PANEL_CACHE_DRIVER:-redis}'
+      REDIS_HOST: '${PANEL_CACHE_DRIVER:-redis}'
+      DB_HOST: '${MYSQL_HOST:-db}'
+      DB_PORT: '${MYSQL_PORT:-3306}'
+      DB_PASSWORD: '${MYSQL_PASSWORD}'
