@@ -1,0 +1,19 @@
+services:
+  my-idlers:
+    image: 'ghcr.io/cp6/my-idlers:latest'
+    environment:
+      - 'SERVICE_FQDN_MYIDLERS_8000'
+      - 'APP_URL=SERVICE_FQDN_MYIDLERS_8000'
+      - 'DB_HOST=${DB_HOST:-db}'
+      - 'DB_DATABASE=${DB_DATABASE:-idle}'
+      - 'DB_USERNAME=${DB_USERNAME:-idle}'
+      - 'DB_PASSWORD=${DB_PASSWORD:-idle}'
+  db:
+    image: 'mysql:latest'
+    volumes:
+      - 'db:/var/lib/mysql'
+    environment:
+      - 'MYSQL_DATABASE=${DB_DATABASE:-idle}'
+      - 'MYSQL_USER=${DB_USERNAME:-idle}'
+      - 'MYSQL_PASSWORD=${DB_PASSWORD:-idle}'
+      - 'MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD:-idle}'

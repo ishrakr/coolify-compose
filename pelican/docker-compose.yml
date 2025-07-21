@@ -1,0 +1,35 @@
+services:
+  db:
+    image: 'mariadb:11.8'
+    command: '--default-authentication-plugin=mysql_native_password'
+    volumes:
+      - './data/database:/var/lib/mysql'
+    environment:
+      MYSQL_DATABASE: '${MYSQL_DATABASE:-panel}'
+      MYSQL_USER: '${MYSQL_USER:-pterodactyl}'
+      MYSQL_PASSWORD: '${MYSQL_PASSWORD:-pterodactyl}'
+      MYSQL_ROOT_PASSWORD: '${MYSQL_ROOT_PASSWORD:-panel_root}'
+
+  redis:
+    image: 'redis:alpine'
+
+  panel:
+    image: 'ghcr.io/pelican-dev/panel:latest'
+    volumes:
+      - 'pelican-data:/pelican-data'
+      - 'pelican-logs:/var/www/html/storage/logs'
+    environment:
+      SERVICE_FQDN_PTERODACTYL: null
+      XDG_DATA_HOME: '/pelican-data'
+      APP_ENV: '${PANEL_APP_ENV:-production}'
+      APP_ENVIRONMENT_ONLY: '${PANEL_APP_ENVIRONMENT_ONLY:-false}'
+      APP_URL: '${SERVICE_FQDN_PTERODACTYL}'
+      APP_TIMEZONE: '${APP_TIMEZONE:-Etc/UTC}'
+      APP_SERVICE_AUTHOR: '${APP_AUTHOR}'
+      CACHE_DRIVER: '${PANEL_CACHE_DRIVER:-redis}'
+      SESSION_DRIVER: '${PANEL_CACHE_DRIVER:-redis}'
+      QUEUE_DRIVER: '${PANEL_CACHE_DRIVER:-redis}'
+      REDIS_HOST: '${PANEL_CACHE_DRIVER:-redis}'
+      DB_HOST: '${MYSQL_HOST:-db}'
+      DB_PORT: '${MYSQL_PORT:-3306}'
+      DB_PASSWORD: '${MYSQL_PASSWORD}'
