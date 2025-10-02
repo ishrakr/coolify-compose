@@ -1,0 +1,23 @@
+services:
+  db:
+    image: 'postgres:18'
+    restart: always
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-postgres}
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+    volumes:
+      - 'postgres_data:/var/lib/postgresql'
+
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      - SERVICE_URL_PGADMIN
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL:?}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD:?}
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
